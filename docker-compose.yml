@@ -3,7 +3,9 @@ version: "3.9"
 services:
   frontend-react-application-dev:
     image: 21-alpine3.18
+    stdin_open: true
+    tty: true
     volumes:
-      - ../:/app
+      - ./:/app
       - ~/.ssh:/root/.ssh
       - /var/run/docker.sock:/var/run/docker.sock
