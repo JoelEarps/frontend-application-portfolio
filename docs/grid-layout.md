@@ -12,6 +12,8 @@ Grid Area - the total area from 4 grid connecting grid lines.
 
 Will make a simple HTML that uses grid view and also has a carousel.
 
+Using in built modules and plugins
+
 ### Basics
 
 All documents start with `<!DOCTYPE hmtl>`
@@ -26,4 +28,50 @@ This can be done with fractions etc or pixels - to make the fraction use easier 
 
 ### Carousel in HTML
 
-https://www.youtube.com/watch?v=EiNiSFIPIQE
+Bootstrap
+JQuery
+CDN
+
+https://www.youtube.com/watch?v=EiNiSFIPIQE\
+
+Styling
+
+Heights
+
+vH
+
+getting screen dimensions
+
+Selection colour on buttons
+
+Pressing buttons html
+
+Passing id to pressed buttons
+
+Making a Nav Bar
+
+Super simple
+Make a div and then link with hyperlinks
+
+Resizing elements on change - fluid design
+
+Fetching Data
+
+```
+function getGithubProfileInformation(){
+return fetch("https://api.github.com/users/JoelEarps")
+.then(function (response) {
+response.json();
+})
+.then(function (data) {
+console.log(data);
+})
+.catch(function (err) {
+console.warn("Something went wrong.", err);
+});
+}
+
+return in a promise only passes the next promise to the
+```
+
+Running commands on load

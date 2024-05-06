@@ -2,27 +2,158 @@
 <html>
   <head>
     <link rel="stylesheet" href="global-styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </head>
-  <body>
+  <body onload="loadPageInfo()">
+    <div class="welcome-banner-container">Nav Bar</div>
+    <div class="welcome-banner-container">Welcome Banner</div>
     <div class="grid-container">
       <div class="grid-item">Column 1.5</div>
       <div class="grid-item">Column 3</div>
-      <div class="carousel">
-        <!-- Left Button -->
-        <button id="prev-btn" class="prev-btn"></button>
+      <div
+        id="myCarousel"
+        class="carousel slide grid-item"
+        data-ride="carousel"
+      >
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+          <li data-target="#myCarousel" data-slide-to="1"></li>
+          <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
 
-        <!-- List Container -->
-        <div id="item-list" class="item-list">
-          <!-- Items -->
-          <img id="item" class="item" src="image-url" />
-          <img id="item" class="item" src="image-url" />
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+          <div class="item active image-sizing-carousel">
+            <img src="football.jpeg" alt="Football" />
+          </div>
+
+          <div class="item image-sizing-carousel">
+            <img src="cooking.jpg" alt="Cooking" />
+          </div>
+
+          <div class="item image-sizing-carousel">
+            <img src="coding.jpg" alt="Coding" />
+          </div>
         </div>
 
-        <!-- Right Button -->
-        <button id="next-btn" class="next-btn"></button>
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+          <span class="sr-only">Next</span>
+        </a>
       </div>
+
       <div class="grid-item">Column 2</div>
       <div class="grid-item">Column 3</div>
     </div>
+    <div class="work-overview-container">
+      <div class="grid-item" id="github-profile-info"></div>
+      <div class="grid-item">
+        <div class="github-selection-icons">
+          <button
+            class="github-button"
+            id="frontend"
+            onclick="githubButtonPressed(this.id)"
+          >
+            Frontend
+          </button>
+          <button
+            class="github-button"
+            id="backend"
+            onclick="githubButtonPressed(this.id)"
+          >
+            Backend
+          </button>
+          <button
+            class="github-button"
+            id="embedded"
+            onclick="githubButtonPressed(this.id)"
+          >
+            Embedded
+          </button>
+        </div>
+
+        <div id="github-repo-information"></div>
+      </div>
+    </div>
+
+    <div class="cv-summary-container">CV and Skills Summary</div>
   </body>
+  <script>
+    function retrieveInformationFromResults(data, buttonID) {
+      switch (buttonID) {
+        case "frontend":
+          console.log(
+            data.filter((item) => {
+              console.log(item.name);
+              return item.name.includes(buttonID);
+            })
+          );
+          break;
+        case "backend":
+          break;
+        case "embedded":
+          break;
+        default:
+          console.error("Invalid button item for github repos");
+      }
+    }
+
+    function githubButtonPressed(buttonID) {
+      const allRepos = fetch("https://api.github.com/users/JoelEarps/repos")
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          console.log(data);
+          retrieveInformationFromResults(data, buttonID);
+        })
+        .catch(function (err) {
+          console.warn("Something went wrong.", err);
+        });
+    }
+
+    async function loadPageInfo() {
+      const githubProfileInfo = await getGithubProfileInformation();
+      const profileInfoContainer = document.getElementById(
+        "github-profile-info"
+      );
+      profileInfoContainer.innerHTML = `
+                <img class="github-avatar" src=${githubProfileInfo.avatar_url}/>
+                <h2>${githubProfileInfo.name}</h2>
+                <p>${githubProfileInfo.bio}</p>
+                <p>Public Repositories: ${githubProfileInfo.public_repos}</p>
+            `;
+    }
+
+    function getGithubProfileInformation() {
+      return fetch("https://api.github.com/users/JoelEarps")
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          return {
+            name: data.name,
+            avatar_url: data.avatar_url,
+            public_repos: data.public_repos,
+            html_url: data.html_url,
+            bio: data.bio,
+          };
+        })
+        .catch(function (err) {
+          console.warn("Something went wrong.", err);
+        });
+    }
+  </script>
 </html>
