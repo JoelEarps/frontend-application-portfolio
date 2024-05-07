@@ -57,6 +57,7 @@
       <div class="grid-item">Column 2</div>
       <div class="grid-item">Column 3</div>
     </div>
+
     <div class="work-overview-container">
       <div class="grid-item" id="github-profile-info"></div>
       <div class="grid-item">
@@ -84,26 +85,54 @@
           </button>
         </div>
 
-        <div id="github-repo-information"></div>
+        <div id="github-repo-information" class="github-repo-information"></div>
       </div>
     </div>
 
     <div class="cv-summary-container">CV and Skills Summary</div>
   </body>
   <script>
+    function createDynamicProfileElement(repoData) {
+      let returnHTML = "";
+      repoData.forEach((item) => {
+        returnHTML += `
+                    <div class="filtered-github-repo-item">
+                        <div class="github-repo-title-and-date">
+                          <h4 style="display:inline">${item.name}</h4>
+                          <h5 style="display:inline">${item.updated_at}</h5>
+                        </div>
+                        <p>${item.description}</p>
+                        <p>${item.html_url}</p>
+                    </div>`;
+      });
+      return returnHTML;
+    }
+
     function retrieveInformationFromResults(data, buttonID) {
       switch (buttonID) {
         case "frontend":
-          console.log(
-            data.filter((item) => {
-              console.log(item.name);
-              return item.name.includes(buttonID);
-            })
-          );
+          return data.filter((item) => {
+            return item.name.includes(buttonID);
+          });
           break;
         case "backend":
+          return data.filter((item) => {
+            return (
+              item.name.includes(buttonID) ||
+              item.language === "TypeScript" ||
+              item.name.includes("NodeJS") ||
+              item.language === "JavaScript"
+            );
+          });
           break;
         case "embedded":
+          return data.filter((item) => {
+            return (
+              item.name.includes(buttonID) ||
+              item.language === "Rust" ||
+              item.language === "C++"
+            );
+          });
           break;
         default:
           console.error("Invalid button item for github repos");
@@ -111,13 +140,23 @@
     }
 
     function githubButtonPressed(buttonID) {
-      const allRepos = fetch("https://api.github.com/users/JoelEarps/repos")
+      const filteredRepos = fetch(
+        "https://api.github.com/users/JoelEarps/repos"
+      )
         .then(function (response) {
           return response.json();
         })
         .then(function (data) {
-          console.log(data);
-          retrieveInformationFromResults(data, buttonID);
+          return retrieveInformationFromResults(data, buttonID);
+        })
+        .then((filteredData) => {
+          const filteredPortfolioElement = document.getElementById(
+            "github-repo-information"
+          );
+
+          console;
+          filteredPortfolioElement.innerHTML =
+            createDynamicProfileElement(filteredData);
         })
         .catch(function (err) {
           console.warn("Something went wrong.", err);
